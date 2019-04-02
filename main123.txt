@@ -1,4 +1,5 @@
 ﻿function
+another function
 #include "../head/SqStack.h"
 #include "../SqStack/SqStack.c"
 #include <stdio.h>
