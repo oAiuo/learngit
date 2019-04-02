@@ -1,0 +1,180 @@
+#include "../head/SqStack.h"
+#include "../SqStack/SqStack.c"
+#include <stdio.h>
+
+void  menu();
+char  fun_choose( );
+void  printAll( SqStack *s);
+
+void  initStack_Pack( SqStack *s);
+int time = 0; //记录栈的初始化次数
+
+void  push_Pack( SqStack *s);
+void  pop_Pack( SqStack *s);
+
+
+int main()
+{
+    SqStack s ;
+    s.elem = NULL;
+    int Tnum;
+    int length;
+    while(1)
+    {
+        menu();
+        switch( fun_choose() )
+        {
+            case '1' : initStack_Pack(&s);break;
+            case '2' : push_Pack(&s);break;
+            case '3' : pop_Pack(&s);break;
+            case '4' : if( clearStack(&s) == SUCCESS)
+                            printf("栈已清空.\n\n");
+                        break;
+            case '5' : if( getTopStack(&s, &Tnum) == SUCCESS )
+                            printf("栈顶元素为 %d.\n\n",Tnum);
+                        break;
+            case '6' : if( stackLength(&s,&length) == SUCCESS )
+                            printf("栈长为 %d.\n\n",length);
+                        break;
+            case '7' : if( destroyStack(&s) == SUCCESS )
+                        {
+                            printf("栈已销毁.\n\n");
+                            time = 0;
+                        }break;
+            case '0' : exit(0);break;
+            default : printf( "输入错误. 重新输入..  \n");
+        }
+    }
+}
+
+void menu()
+{
+        printf("\n\n\t\t|~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~|\n");
+        printf("\t\t|       <<  静态栈操作  >>      |\n");
+        printf("\t\t|       根据序号选择功能：      |\n");
+        printf("\t\t|        1.初始化               |\n");
+        printf("\t\t|        2.入栈                 |\n");
+        printf("\t\t|        3.出栈                 |\n");
+        printf("\t\t|        4.清空栈               |\n");
+        printf("\t\t|        5.得到栈顶元素         |\n");
+        printf("\t\t|        6.得到栈长             |\n");
+        printf("\t\t|        7.销毁栈               |\n");
+        printf("\t\t|        0.退出程序             |\n");
+        printf("\t\t|                               |\n");
+        printf("\t\t|  (功能选择处只识别第一个字符) |\n");
+        printf("\t\t ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
+
+}
+
+
+char    fun_choose()
+{
+    char    num ;
+    int     ch;
+    printf( "功能选择:___\b\b");
+    if( scanf("%c",&num) != 1 )
+    {
+        printf( "输入错误.\n");
+        return 0;
+    } else{
+            while( (ch = getchar( )) != EOF && ch != '\n' )
+                ;
+            return num;
+          }
+}
+
+
+void  printAll( SqStack *s)
+{
+    printf("数据从栈顶向下: ");
+    int t = s->top;
+    while( t!= -1 )
+    {
+        printf("%d ",s->elem[t]);
+        t--;
+    }
+    printf("\n\n");
+}
+
+
+void  initStack_Pack( SqStack *s)
+{
+    extern int time;
+    int sizes, ch;
+    if( time == 0 )
+    {
+        printf("请输入初始化栈的大小: ");
+        if( scanf("%d", &sizes) != 1 || sizes <= 0)
+        {
+            //输入错误处理
+            while( (ch = getchar( )) != EOF && ch != '\n' )
+                ;
+            printf("输入错误.\n\n");
+            return;
+        } else  {
+                    //输入正确
+                    while( (ch = getchar( )) != EOF && ch != '\n' )
+                        ;
+                    if( initStack( s, sizes) == SUCCESS )
+                        printf("初始化成功.\n\n");
+                        else printf("初始化失败.\n\n");
+                }
+        time++;
+    }   else
+            {
+                //对应time != 0 时的情况，已初始化
+                printf("只能初始化一次.\n\n");
+                return;
+            }
+
+}
+
+
+void  push_Pack( SqStack *s)
+{
+    if( s->elem == NULL )
+    {
+        printf("栈未初始化.\n\n");
+        return;
+    }
+
+    ElemType data;
+    int ch;
+    printf("请输入入栈的数据： ");
+    if( scanf("%d", &data) != 1)
+    {
+        //输入错误处理
+        while( (ch = getchar( )) != EOF && ch != '\n' )
+            ;
+        printf("输入错误.\n\n");
+        return;
+    } else {
+                //输入正确
+                while( (ch = getchar( )) != EOF && ch != '\n' )
+                    ;
+                if( pushStack(s, data) == SUCCESS )
+                {
+                    printAll(s);
+                    printf("入栈成功.\n\n");
+                } else printf("入栈失败.\n\n");
+            }
+}
+
+
+void  pop_Pack( SqStack *s )
+{
+    if( s->elem == NULL )
+    {
+        printf("栈未初始化.\n\n");
+        return;
+    }
+
+    int numOut;
+    if( popStack(s, &numOut) == SUCCESS )
+    {
+        printf("出栈成功.\n");
+        printf("出栈的数据为 %d\n", numOut);
+        if(s->top != -1)
+            printAll(s);
+    } else printf("出栈失败.\n\n");
+}
